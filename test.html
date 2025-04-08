@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <title>Dot Tap Game</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+      background-color: #fff;
+      touch-action: manipulation;
+      height: 100%;
+    }
+
+    #score {
+      position: fixed;
+      top: 3vh;
+      left: 5vw;
+      font-size: 5vw;
+      font-weight: bold;
+      z-index: 10;
+    }
+
+    #dot {
+      position: fixed;
+      width: 12vw;
+      height: 12vw;
+      max-width: 60px;
+      max-height: 60px;
+      background-color: black;
+      border-radius: 50%;
+      z-index: 5;
+      touch-action: manipulation;
+    }
+
+    #gameOver {
+      display: none;
+      position: fixed;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      padding: 5vw;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 2vw;
+      z-index: 20;
+    }
+
+    #gameOver h1 {
+      font-size: 8vw;
+      margin-bottom: 2vw;
+      color: red;
+    }
+
+    #finalScore {
+      font-size: 6vw;
+      margin-bottom: 5vw;
+    }
+
+    #retryBtn {
+      padding: 3vw 6vw;
+      font-size: 5vw;
+      background-color: black;
+      color: white;
+      border: none;
+      border-radius: 2vw;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    #retryBtn:active {
+      background-color: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="score">Score: 0</div>
+  <div id="dot"></div>
+  <div id="gameOver">
+    <h1>Game Over!</h1>
+    <p id="finalScore">Final Score: 0</p>
+    <button id="retryBtn">Try Again</button>
+  </div>
+
+  <script>
+    const dot = document.getElementById('dot');
+    const scoreDisplay = document.getElementById('score');
+    const gameOverDisplay = document.getElementById('gameOver');
+    const finalScoreDisplay = document.getElementById('finalScore');
+    const retryBtn = document.getElementById('retryBtn');
+
+    let score = 0;
+    let timeoutId;
+
+    function randomPosition() {
+      const maxX = window.innerWidth - dot.offsetWidth;
+      const maxY = window.innerHeight - dot.offsetHeight;
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+      dot.style.left = x + 'px';
+      dot.style.top = y + 'px';
+    }
+
+    function showDot() {
+      randomPosition();
+      clearTimeout(timeoutId);
+
+      timeoutId = setTimeout(() => {
+        endGame();
+      }, Math.max(300, 1000 - score * 50));
+    }
+
+    function endGame() {
+      dot.style.display = 'none';
+      gameOverDisplay.style.display = 'block';
+      finalScoreDisplay.textContent = `Final Score: ${score}`;
+    }
+
+    function resetGame() {
+      score = 0;
+      scoreDisplay.textContent = `Score: ${score}`;
+      gameOverDisplay.style.display = 'none';
+      dot.style.display = 'block';
+      showDot();
+    }
+
+    dot.addEventListener('click', () => {
+      score++;
+      scoreDisplay.textContent = `Score: ${score}`;
+      showDot();
+    });
+
+    retryBtn.addEventListener('click', resetGame);
+
+    // 초기 시작
+    showDot();
+  </script>
+</body>
+</html>
